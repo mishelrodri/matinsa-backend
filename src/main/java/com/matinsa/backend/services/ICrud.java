@@ -10,7 +10,7 @@ public interface ICrud<T, D> {
 
     Page<T> listar(Pageable pageable);
     Mensaje crear(D dto);
-    Mensaje editar(D dto);
-    Mensaje eliminar(String id);
+    Mensaje editar(Long id, D dto);
+    Mensaje eliminar(Long id);
     List<T> leer();
 }

@@ -16,4 +16,8 @@ public class CategoriaProducto {
     private Long idTipoProducto;
 
     private String nombre;
+
+    public CategoriaProducto(String nombre) {
+        this.nombre = nombre;
+    }
 }

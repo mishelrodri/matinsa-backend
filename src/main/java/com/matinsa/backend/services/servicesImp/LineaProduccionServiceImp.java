@@ -49,12 +49,14 @@ public class LineaProduccionServiceImp implements LineaProduccionService {
     }
 
     @Override
-    public Mensaje editar(LineaProduccionDto dto) {
+    @Transactional
+    public Mensaje editar(Long id, LineaProduccionDto dto) {
         return null;
     }
 
     @Override
-    public Mensaje eliminar(String id) {
+    @Transactional
+    public Mensaje eliminar(Long id) {
         return null;
     }
 

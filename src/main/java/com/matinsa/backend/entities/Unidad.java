@@ -14,5 +14,10 @@ public class Unidad {
     @Column(name = "id_unidad")
     private Long idUnidad;
 
+    @Column(unique = true, length = 50)
     private String nombre;
+
+    public Unidad(String nombre) {
+        this.nombre = nombre;
+    }
 }

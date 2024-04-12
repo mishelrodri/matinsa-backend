@@ -13,9 +13,9 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
     private Long idProducto;
-
+    @Column(unique = true)
     private String codigo;
-    @Column(name = "nombre_producto")
+    @Column(name = "nombre_producto", unique = true)
     private String nombreProducto;
     private String descripcion;
     @Column(name = "tipo_producto")
@@ -30,8 +30,16 @@ public class Producto {
     private CategoriaProducto categoriaProducto;
 
     private int cantidad;
-    private Boolean estado= Boolean.FALSE;
 
+    private Boolean estado = Boolean.TRUE;
 
-
+    public Producto(String codigo, String nombreProducto, String descripcion, int tipoProducto, Unidad unidad, CategoriaProducto categoriaProducto, int cantidad) {
+        this.codigo = codigo;
+        this.nombreProducto = nombreProducto;
+        this.descripcion = descripcion;
+        this.tipoProducto = tipoProducto;
+        this.unidad = unidad;
+        this.categoriaProducto = categoriaProducto;
+        this.cantidad = cantidad;
+    }
 }

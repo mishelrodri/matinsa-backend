@@ -26,7 +26,6 @@ public class OrdenProducionServiceImp implements OrdenProducionService {
     private final OrdenProduccionRepository ordenRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
-    private final DetalleOrdenRepository detalleOrdenRepository;
 
     public static final int TERMINADO = 1;
     public static final int MATERIA_PRIMA = 2;
@@ -71,12 +70,12 @@ public class OrdenProducionServiceImp implements OrdenProducionService {
     }
 
     @Override
-    public Mensaje editar(OrdenProduccionDto dto) {
+    public Mensaje editar(Long id, OrdenProduccionDto dto) {
         return null;
     }
 
     @Override
-    public Mensaje eliminar(String id) {
+    public Mensaje eliminar(Long id) {
         return null;
     }
 
