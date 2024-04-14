@@ -94,6 +94,12 @@ public class OrdenProducionServiceImp implements OrdenProducionService {
         return new Mensaje("La orden de producción se finalizo exitosamente");
     }
 
+    @Override
+    public Mensaje verificarExistencias(CantidadDto cantidadDto) {
+        return verificarExistencia(cantidadDto.id(),MATERIA_PRIMA,cantidadDto.cantidad());
+    }
+
+
     private Producto comprobarTipoProducto(Long id, int tipo) {
         Producto producto = findProductoById(id);
         if (producto.getTipoProducto() == tipo) {
@@ -107,6 +113,15 @@ public class OrdenProducionServiceImp implements OrdenProducionService {
         Producto producto = comprobarTipoProducto(id, tipo);
         if (producto.getCantidad() >= cantidad) {
             return producto;
+        } else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Lo sentimos, actualmente no contamos con suficientes existencias de "+ producto.getNombreProducto() +" en nuestro inventario.");
+        }
+    }
+
+    private Mensaje verificarExistencia(Long id, int tipo, int cantidad){
+        Producto producto = comprobarTipoProducto(id, tipo);
+        if (producto.getCantidad() >= cantidad) {
+            return new Mensaje("Existencias suficientes");
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Lo sentimos, actualmente no contamos con suficientes existencias de "+ producto.getNombreProducto() +" en nuestro inventario.");
         }

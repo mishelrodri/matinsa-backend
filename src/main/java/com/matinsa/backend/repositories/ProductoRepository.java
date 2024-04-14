@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto,Long> {
 
@@ -13,4 +15,11 @@ public interface ProductoRepository extends JpaRepository<Producto,Long> {
     Long getCorrelativo(@PathParam("tipo") int tipo);
 
     boolean existsByNombreProducto(String nombre);
+
+    @Query(value = "SELECT * from producto WHERE id_categoria_producto=:categoria and tipo_producto=1",nativeQuery = true)
+    List<Producto> findAllProductsByCategoria(@PathParam("categoria") Long categoria);
+
+    @Query(value = "SELECT * from producto WHERE tipo_producto=2",nativeQuery = true)
+    List<Producto> findAllMateriaPrima();
+
 }

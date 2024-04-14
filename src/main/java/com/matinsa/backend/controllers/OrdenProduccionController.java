@@ -1,5 +1,6 @@
 package com.matinsa.backend.controllers;
 
+import com.matinsa.backend.dto.CantidadDto;
 import com.matinsa.backend.dto.OrdenProduccionDto;
 import com.matinsa.backend.entities.OrdenProduccion;
 import com.matinsa.backend.security.dto.Mensaje;
@@ -21,6 +22,11 @@ public class OrdenProduccionController {
     @GetMapping
     public ResponseEntity<Page<OrdenProduccion>> mensaje(Pageable pageable){
         return ResponseEntity.ok(ordenProducionService.listar(pageable));
+    }
+
+    @PostMapping("verificar-existencias")
+    public ResponseEntity<Mensaje> verificarExistencias(@RequestBody CantidadDto dto){
+        return ResponseEntity.ok(ordenProducionService.verificarExistencias(dto));
     }
 
     @PostMapping

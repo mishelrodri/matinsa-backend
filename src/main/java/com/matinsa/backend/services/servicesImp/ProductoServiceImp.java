@@ -100,6 +100,16 @@ public class ProductoServiceImp implements ProductoService {
         return productoRepository.findAll();
     }
 
+    @Override
+    public List<Producto> findAllProductsByCategoria(Long id) {
+        return productoRepository.findAllProductsByCategoria(id);
+    }
+
+    @Override
+    public List<Producto> findAllMateriaPrima() {
+        return productoRepository.findAllMateriaPrima();
+    }
+
     private String generarCodigo(int tipoProducto) {
         Long correlativo = productoRepository.getCorrelativo(verificarTipoProducto(tipoProducto));
         if (tipoProducto == PRODUCTO_TERMINADO) {
@@ -116,4 +126,6 @@ public class ProductoServiceImp implements ProductoService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Lo sentimos, el tipo de producto seleccionado no existe en nuestro sistema. Por favor, asegúrate de ingresar un valor válido. Las opciones válidas son: 1 - Producto terminado, 2 - Matería prima.");
         }
     }
+
+
 }
