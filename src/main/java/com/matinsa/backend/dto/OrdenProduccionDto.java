@@ -13,8 +13,6 @@ public record OrdenProduccionDto(
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         LocalDate fechaEntrega,
         int cantidad,
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate fechaFinalizacion,
         EstadoOrden estado,
         List<DetalleOrdenProduccionDto> detallesOrden
 ) {

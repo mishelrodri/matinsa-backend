@@ -6,6 +6,7 @@ public record ProductoDto(
         int tipoProducto,
         Long unidad,
         Long categoriaProducto,
-        int cantidad
+        int cantidad,
+        Boolean estado
 ) {
 }

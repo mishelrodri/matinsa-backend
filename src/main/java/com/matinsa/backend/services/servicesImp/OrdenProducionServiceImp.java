@@ -3,11 +3,13 @@ package com.matinsa.backend.services.servicesImp;
 import com.matinsa.backend.dto.*;
 import com.matinsa.backend.entities.*;
 import com.matinsa.backend.enums.EstadoOrden;
+import com.matinsa.backend.interfaces.IOrden;
 import com.matinsa.backend.repositories.*;
 import com.matinsa.backend.security.dto.Mensaje;
 import com.matinsa.backend.security.exceptions.CustomException;
 import com.matinsa.backend.services.OrdenProducionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,22 +84,22 @@ public class OrdenProducionServiceImp implements OrdenProducionService {
 
     @Override
     public List<OrdenProduccion> leer() {
-        return null;
-    }
-
-    @Override
-    public Mensaje finalizarOrdenProduccion(Long idOrden, LocalDate fechaFinalizacion) {
-        OrdenProduccion ordenProduccion = findOrdenById(idOrden);
-        ordenProduccion.setEstado(EstadoOrden.FINALIZADA);
-        ordenProduccion.setFechaFinalizacion(fechaFinalizacion);
-        Producto productoProducido = ordenProduccion.getProducto();
-        productoProducido.setCantidad(productoProducido.getCantidad() + ordenProduccion.getCantidad());
-        return new Mensaje("La orden de producción se finalizo exitosamente");
+        return ordenRepository.findAllByEstado(EstadoOrden.PENDIENTE);
     }
 
     @Override
     public Mensaje verificarExistencias(CantidadDto cantidadDto) {
         return verificarExistencia(cantidadDto.id(),MATERIA_PRIMA,cantidadDto.cantidad());
+    }
+
+    @Override
+    public List<IOrden> reporte(String estado, String fecha) {
+        return ordenRepository.reporte(estado,fecha);
+    }
+
+    @Override
+    public Page<IOrden> listarFiltro(String estado, String fecha, Pageable pageable) {
+        return ordenRepository.listar(estado,fecha, pageable);
     }
 
 

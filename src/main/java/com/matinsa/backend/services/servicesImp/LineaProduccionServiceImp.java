@@ -1,9 +1,10 @@
 package com.matinsa.backend.services.servicesImp;
 
+import com.matinsa.backend.dto.FinalizarOrdenDto;
 import com.matinsa.backend.dto.LineaProduccionDto;
-import com.matinsa.backend.entities.Cliente;
 import com.matinsa.backend.entities.LineaProduccion;
 import com.matinsa.backend.entities.OrdenProduccion;
+import com.matinsa.backend.entities.Producto;
 import com.matinsa.backend.enums.EstadoOrden;
 import com.matinsa.backend.repositories.LineaProduccionRepository;
 import com.matinsa.backend.repositories.OrdenProduccionRepository;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,6 +35,11 @@ public class LineaProduccionServiceImp implements LineaProduccionService {
                 .orElseThrow(() -> new CustomException(HttpStatus.CONFLICT, "La orden de producción con ID " + id + " no existe"));
     }
 
+    private LineaProduccion findLineaProduccionById(Long id) {
+        return lineaProduccionRepository.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.CONFLICT, "La línea de producción con ID " + id + " no existe"));
+    }
+
     @Override
     public Page<LineaProduccion> listar(Pageable pageable) {
         return lineaProduccionRepository.findAll(pageable);
@@ -45,7 +52,7 @@ public class LineaProduccionServiceImp implements LineaProduccionService {
         LineaProduccion lineaProduccion = new LineaProduccion(dto.fechaIngreso(),verificarLineaProduccion(dto.lineaProduccion()),ordenProduccion);
         ordenProduccion.setEstado(EstadoOrden.EN_PROCESO);
         lineaProduccionRepository.save(lineaProduccion);
-        return null;
+        return new Mensaje("La línea de producción se ha registrado exitosamente");
     }
 
     @Override
@@ -63,6 +70,18 @@ public class LineaProduccionServiceImp implements LineaProduccionService {
     @Override
     public List<LineaProduccion> leer() {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public Mensaje finalizarOrdenProduccion(FinalizarOrdenDto dto) {
+        LineaProduccion lineaProduccion = findLineaProduccionById(dto.lineaProduccion());
+        lineaProduccion.getOrdenProduccion().setEstado(EstadoOrden.FINALIZADA);
+        lineaProduccion.setFechaFinalizacion(dto.fechaFinalizacion());
+        Producto productoProducido = lineaProduccion.getOrdenProduccion().getProducto();
+        productoProducido.setCantidad(productoProducido.getCantidad() + lineaProduccion.getOrdenProduccion().getCantidad());
+        lineaProduccionRepository.save(lineaProduccion);
+        return new Mensaje("La orden de producción se finalizo exitosamente");
     }
 
     private int verificarLineaProduccion(int lineaProduccion){

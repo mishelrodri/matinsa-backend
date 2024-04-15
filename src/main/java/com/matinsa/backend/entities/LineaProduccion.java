@@ -21,6 +21,9 @@ public class LineaProduccion {
     @Column(name = "fecha_Ingreso")
     private LocalDate fechaIngreso;
 
+    @Column(name = "fecha_finalizacion")
+    private LocalDate fechaFinalizacion;
+
     @Column(name = "linea_produccion")
     private int lineaProduccion;
 

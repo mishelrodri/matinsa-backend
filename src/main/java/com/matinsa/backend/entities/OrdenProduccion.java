@@ -33,8 +33,6 @@ public class OrdenProduccion {
     @Column(name = "fecha_entrega")
     private LocalDate fechaEntrega;
     private int cantidad;
-    @Column(name = "fecha_finalizacion")
-    private LocalDate fechaFinalizacion;
 
     @Enumerated(EnumType.STRING)
     private EstadoOrden estado= EstadoOrden.PENDIENTE;

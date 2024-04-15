@@ -4,6 +4,7 @@ import com.matinsa.backend.dto.ProductoDto;
 import com.matinsa.backend.entities.CategoriaProducto;
 import com.matinsa.backend.entities.Producto;
 import com.matinsa.backend.entities.Unidad;
+import com.matinsa.backend.interfaces.IProducto;
 import com.matinsa.backend.repositories.CategoriaRepository;
 import com.matinsa.backend.repositories.ProductoRepository;
 import com.matinsa.backend.repositories.UnidadRepository;
@@ -70,20 +71,9 @@ public class ProductoServiceImp implements ProductoService {
     @Transactional
     public Mensaje editar(Long id, ProductoDto dto) {
         Producto producto = findProductoById(id);
-        CategoriaProducto categoria = findCategoriaById(dto.categoriaProducto());
-        Unidad unidad = findUnidadById(dto.unidad());
-        if (!producto.getNombreProducto().equals(dto.nombreProducto())) {
-            if (categoriaRepository.existsByNombre(dto.nombreProducto())) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, "Ya existe un producto con el nombre: " + dto.nombreProducto());
-            }
-        }
-        producto.setNombreProducto(dto.nombreProducto());
         producto.setDescripcion(dto.descripcion());
-        producto.setCategoriaProducto(categoria);
-        producto.setUnidad(unidad);
-        producto.setTipoProducto(verificarTipoProducto(dto.tipoProducto()));
-
         producto.setCantidad(dto.cantidad());
+        producto.setEstado(dto.estado());
         return new Mensaje("El producto ha sido editado exitosamente");
     }
 
@@ -110,6 +100,17 @@ public class ProductoServiceImp implements ProductoService {
         return productoRepository.findAllMateriaPrima();
     }
 
+    @Override
+    public Page<IProducto> findAllProducts(Pageable pageable,int tipo) {
+        return productoRepository.findAllProducts(pageable, tipo);
+    }
+
+    @Override
+    public List<IProducto> reporte(Integer tipo) {
+        return productoRepository.findAllProducts(tipo);
+    }
+
+
     private String generarCodigo(int tipoProducto) {
         Long correlativo = productoRepository.getCorrelativo(verificarTipoProducto(tipoProducto));
         if (tipoProducto == PRODUCTO_TERMINADO) {
@@ -118,6 +119,8 @@ public class ProductoServiceImp implements ProductoService {
             return MATERIA_PRIMA_PREFIJO + (correlativo + 1);
         }
     }
+
+
 
     private int verificarTipoProducto(int tipoProducto) {
         if (tipoProducto == PRODUCTO_TERMINADO || tipoProducto == PRODUCTO_MATERIA_PRIMA) {
