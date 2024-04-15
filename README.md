@@ -48,7 +48,7 @@ git clone https://github.com/mishelrodri/matinsa-backend.git
 Nota: Al ejecutar la aplicación por primera vez, se generarán automáticamente algunos datos, como los usuarios, en la base de datos.
 
 ## 🔐 Credentials
-username: administrador -> password: 1234
-username: bodega -> password: 1234
-username: produccion -> password: 1234
+- username: administrador -> password: 1234
+- username: bodega -> password: 1234
+- username: produccion -> password: 1234
 
