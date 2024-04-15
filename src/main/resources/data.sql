@@ -46,6 +46,6 @@ INSERT INTO "public"."producto" VALUES (14, 143, 'PT1', 'Blusa de seda', 't', 'B
 INSERT INTO "public"."producto" VALUES (19, 25, 'PT6', 'Camisa Azul 1989', 't', 'Camisa Azul 1989', 1, 2, 1);
 INSERT INTO "public"."producto" VALUES (43, 50, 'MP12', 'Camisa personalizada lover', 't', 'Camisa personalizada lover', 2, NULL, 1);
 
-INSERT INTO "public"."usuario" VALUES (2, 'administrador@ues.edu.sv', 'ADMINISTRADOR', 'administrador ', '$2a$10$nQ8eHiX.nnkPtj1JNFQODOdXjdT6X/rgd6MPyctFw4r9eQLnlKvbS', NULL, 1);
+INSERT INTO "public"."usuario" VALUES (2, 'administrador@ues.edu.sv', 'ADMINISTRADOR', 'administrador', '$2a$10$nQ8eHiX.nnkPtj1JNFQODOdXjdT6X/rgd6MPyctFw4r9eQLnlKvbS', NULL, 1);
 INSERT INTO "public"."usuario" VALUES (3, 'bodega@ues.edu.sv', 'BODEGA', 'bodega', '$2a$10$nQ8eHiX.nnkPtj1JNFQODOdXjdT6X/rgd6MPyctFw4r9eQLnlKvbS', NULL, 2);
 INSERT INTO "public"."usuario" VALUES (4, 'produccion@ues.edu.sv', 'PRODUCCION', 'produccion', '$2a$10$nQ8eHiX.nnkPtj1JNFQODOdXjdT6X/rgd6MPyctFw4r9eQLnlKvbS', NULL, 3);
