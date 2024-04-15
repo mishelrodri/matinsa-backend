@@ -8,10 +8,9 @@ import com.matinsa.backend.security.entities.Rol;
 import com.matinsa.backend.security.entities.Usuario;
 import com.matinsa.backend.security.exceptions.CustomException;
 import com.matinsa.backend.security.jwt.JwtProvider;
+import com.matinsa.backend.security.repositories.RolRepository;
 import com.matinsa.backend.security.repositories.UsuarioRepository;
-import com.matinsa.backend.security.services.RolService;
 import com.matinsa.backend.security.services.UsuarioService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.List;
@@ -38,13 +38,28 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final AuthenticationManager authenticationManager;
 
-    private final RolService rolService;
+    private final RolRepository rolRepository;
 
     private final JwtProvider jwtProvider;
+
+    public Usuario findUsuarioById(Long id){
+        return usuarioRepository.findById(id)
+                .orElseThrow(()-> new CustomException(HttpStatus.NOT_FOUND, "El usuario no existe"));
+    }
+
+    public Rol findRolById(Long id){
+        return rolRepository.findById(id).orElseThrow(()->new RuntimeException("No se encontro el rol"));
+    }
+
 
     @Override
     public Page<Usuario> findAll(Pageable pageable) {
         return usuarioRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Rol> findAllRoles(){
+        return rolRepository.findAll();
     }
 
     @Override
@@ -94,8 +109,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuarioRepository.existsByEmail(nuevoUsuario.email()))
             throw new CustomException(HttpStatus.BAD_REQUEST, "ese email de usuario ya existe");
 
-        Optional<Rol> rolOptional = rolService.getById(nuevoUsuario.rol());
-        Rol rolUsuario = rolOptional.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "No se encontró el rol con el ID"));
+        Rol rolUsuario = findRolById(nuevoUsuario.rol());
 
         Usuario usuario = new Usuario(
                 nuevoUsuario.nombre(),
@@ -108,6 +122,39 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.save(usuario);
 
         return new Mensaje(usuario.getNombreUsuario() + " ha sido creado");
+    }
+
+    @Override
+    public Mensaje update(Long id, NuevoUsuario nuevoUsuario) {
+
+        Usuario usuarioBase = findUsuarioById(id);
+
+        if (!usuarioBase.getNombreUsuario().equals(nuevoUsuario.nombreUsuario())) {
+            if (usuarioRepository.existsByNombreUsuario(nuevoUsuario.nombreUsuario())) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, "ese nombre de usuario ya existe");
+            }
+        }
+
+        if (!usuarioBase.getEmail().equals(nuevoUsuario.email())) {
+            if (usuarioRepository.existsByEmail(nuevoUsuario.email())) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, "ese email de usuario ya existe");
+            }
+        }
+
+        Rol rolUsuario = findRolById(nuevoUsuario.rol());
+        usuarioBase.setNombreUsuario(nuevoUsuario.nombreUsuario());
+        usuarioBase.setEmail(nuevoUsuario.email());
+        usuarioBase.setPassword(passwordEncoder.encode(nuevoUsuario.password()));
+        usuarioBase.setRol(rolUsuario);
+        usuarioRepository.save(usuarioBase);
+        return new Mensaje(nuevoUsuario.nombreUsuario() + " ha sido editado");
+    }
+
+    @Override
+    public Mensaje delete(Long id) {
+        Usuario usuario = findUsuarioById(id);
+        usuarioRepository.delete(usuario);
+        return new Mensaje("El usuario ha sido eliminado");
     }
 
 }

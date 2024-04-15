@@ -34,7 +34,7 @@ public class ClienteServiceImp implements ClienteService {
     @Override
     @Transactional
     public Mensaje crear(ClienteDto dto) {
-        Cliente cliente = new Cliente(dto.nombre(), dto.direccion(), dto.telefono());
+        Cliente cliente = new Cliente(dto.nombre(), dto.direccion());
         clienteRepository.save(cliente);
         return new Mensaje("El Cliente ha sido creado exitosamente");
     }
@@ -45,7 +45,6 @@ public class ClienteServiceImp implements ClienteService {
         Cliente cliente = findClienteById(id);
         cliente.setNombre(dto.nombre());
         cliente.setDireccion(dto.direccion());
-        cliente.setTelefono(dto.telefono());
         clienteRepository.save(cliente);
         return new Mensaje("El Cliente ha sido editado exitosamente");
     }

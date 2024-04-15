@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -29,11 +30,6 @@ public class ProductoController {
     private final ProductoService productoService;
     private final ReportGenerator reportGenerator;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Page<IProducto>> listar(Pageable pageable, @PathVariable int id){
-        return ResponseEntity.ok(productoService.findAllProducts(pageable, id));
-    }
-
     @GetMapping("/combo/{id}")
     public ResponseEntity<List<Producto>> combo(@PathVariable Long id){
         return ResponseEntity.ok(productoService.findAllProductsByCategoria(id));
@@ -44,25 +40,31 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.findAllMateriaPrima());
     }
 
+    @PreAuthorize("hasRole('BODEGA') or hasRole('ADMINISTRADOR')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Page<IProducto>> listar(Pageable pageable, @PathVariable int id){
+        return ResponseEntity.ok(productoService.findAllProducts(pageable, id));
+    }
 
+    @PreAuthorize("hasRole('BODEGA') or hasRole('ADMINISTRADOR')")
     @PostMapping
     public ResponseEntity<Mensaje> crear(@RequestBody @Valid ProductoDto productoDto){
         return ResponseEntity.ok(productoService.crear(productoDto));
     }
 
+    @PreAuthorize("hasRole('BODEGA') or hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
     public ResponseEntity<Mensaje> editar(@PathVariable Long id,@RequestBody @Valid ProductoDto productoDto){
         return ResponseEntity.ok(productoService.editar(id,productoDto));
     }
 
+    @PreAuthorize("hasRole('BODEGA') or hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Mensaje> eliminar(@PathVariable Long id){
         return ResponseEntity.ok(productoService.eliminar(id));
     }
 
-
-
-    //    @PreAuthorize("hasRole('ADMINISTRADOR') or hasAuthority('CLIENTE')")
+    @PreAuthorize("hasRole('BODEGA') or hasRole('ADMINISTRADOR')")
     @GetMapping("/generar-pdf/{id}")
     public ResponseEntity<byte[]> generarPDF(@PathVariable Integer id) throws Exception {
         List<?> datos = productoService.reporte(id);

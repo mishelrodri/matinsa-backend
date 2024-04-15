@@ -27,7 +27,7 @@ public class UsuarioPrincipal implements UserDetails {
     }
 
     public static UsuarioPrincipal build(Usuario usuario){
-        GrantedAuthority rol = new SimpleGrantedAuthority(usuario.getRol().getNombreRol());
+        GrantedAuthority rol = new SimpleGrantedAuthority("ROLE_" +usuario.getRol().getNombreRol());
         return new UsuarioPrincipal(usuario.getNombre(), usuario.getNombreUsuario(), usuario.getEmail(), usuario.getPassword(), rol);
     }
 

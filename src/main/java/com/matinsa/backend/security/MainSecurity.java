@@ -46,9 +46,8 @@ public class MainSecurity {
         http.csrf(csrf -> csrf.disable());
         http.cors(Customizer.withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/usuario/**").permitAll()
-                .anyRequest().authenticated());
+                http.authorizeHttpRequests(auth -> auth.requestMatchers("/usuario/**","swagger-ui/**","/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated());
         http.exceptionHandling(exc -> exc.authenticationEntryPoint(jwtEntryPoint));
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

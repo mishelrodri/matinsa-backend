@@ -77,6 +77,9 @@ public class LineaProduccionServiceImp implements LineaProduccionService {
     public Mensaje finalizarOrdenProduccion(FinalizarOrdenDto dto) {
         LineaProduccion lineaProduccion = findLineaProduccionById(dto.lineaProduccion());
         lineaProduccion.getOrdenProduccion().setEstado(EstadoOrden.FINALIZADA);
+        if (lineaProduccion.getFechaIngreso().isAfter(dto.fechaFinalizacion())){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "La fecha de finalización no puede ser menor a la de ingreso");
+        }
         lineaProduccion.setFechaFinalizacion(dto.fechaFinalizacion());
         Producto productoProducido = lineaProduccion.getOrdenProduccion().getProducto();
         productoProducido.setCantidad(productoProducido.getCantidad() + lineaProduccion.getOrdenProduccion().getCantidad());

@@ -60,9 +60,14 @@ public class ProductoServiceImp implements ProductoService {
         }
         String codigo = generarCodigo(dto.tipoProducto());
         Unidad unidad = findUnidadById(dto.unidad());
-        CategoriaProducto categoria = findCategoriaById(dto.categoriaProducto());
+        Producto producto;
+        if(dto.tipoProducto()==PRODUCTO_TERMINADO){
+            CategoriaProducto categoria = findCategoriaById(dto.categoriaProducto());
+            producto = new Producto(codigo, dto.nombreProducto(), dto.descripcion(), dto.tipoProducto(), unidad, categoria, dto.cantidad());
+        }else {
+            producto = new Producto(codigo, dto.nombreProducto(), dto.descripcion(), dto.tipoProducto(), unidad, dto.cantidad());
+        }
 
-        Producto producto = new Producto(codigo, dto.nombreProducto(), dto.descripcion(), dto.tipoProducto(), unidad, categoria, dto.cantidad());
         productoRepository.save(producto);
         return new Mensaje("El producto ha sido creado exitosamente");
     }
@@ -87,12 +92,12 @@ public class ProductoServiceImp implements ProductoService {
 
     @Override
     public List<Producto> leer() {
-        return productoRepository.findAll();
+        return productoRepository.findAllByEstado(Boolean.TRUE);
     }
 
     @Override
     public List<Producto> findAllProductsByCategoria(Long id) {
-        return productoRepository.findAllProductsByCategoria(id);
+        return productoRepository.findAllProductsByCategoriaAndEstado(id,Boolean.TRUE);
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -32,32 +33,38 @@ public class OrdenProduccionController {
     public final OrdenProducionService ordenProducionService;
     private final ReportGenerator reportGenerator;
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @GetMapping
     public ResponseEntity<Page<OrdenProduccion>> listarOrdenes(Pageable pageable){
         return ResponseEntity.ok(ordenProducionService.listar(pageable));
     }
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @GetMapping("/filtro")
     public ResponseEntity<Page<IOrden>> listar(@RequestParam(value = "estado", required = false) String estado,
                                                @RequestParam(value = "fecha", required = false)  String fecha, Pageable pageable){
         return ResponseEntity.ok(ordenProducionService.listarFiltro(estado,fecha,pageable));
     }
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @GetMapping("combo")
     public ResponseEntity<List<OrdenProduccion>> combo(){
         return ResponseEntity.ok(ordenProducionService.leer());
     }
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @PostMapping("verificar-existencias")
     public ResponseEntity<Mensaje> verificarExistencias(@RequestBody CantidadDto dto){
         return ResponseEntity.ok(ordenProducionService.verificarExistencias(dto));
     }
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @PostMapping
     public ResponseEntity<Mensaje> crear(@RequestBody OrdenProduccionDto dto){
         return ResponseEntity.ok(ordenProducionService.crear(dto));
     }
 
+    @PreAuthorize("hasRole('PRODUCCION') or hasRole('ADMINISTRADOR')")
     @GetMapping("/generar-pdf")
     public ResponseEntity<byte[]> generarPDF(@RequestParam(value = "estado", required = false) String estado, @RequestParam(value = "fecha", required = false)  String fecha) throws Exception {
         List<?> datos = ordenProducionService.reporte(estado,fecha);
